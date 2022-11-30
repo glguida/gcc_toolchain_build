@@ -7,12 +7,11 @@ supported.
 
 ## Usage
 
-Run 'make populate' to download the required sources.
-Run 'make <triplet>-gcc' to compile a gcc for the required platform..
+1. Run `make populate` to download the required sources.
+2. Run `make <triplet>-gcc` to compile a gcc for the required platform..
 
-Compiled binaries will be installed in INSTALLDIR, which defaults to
-
-     `<source-dir>/install/`
+Compiled binaries will be installed in INSTALLDIR, which defaults to 
+`<source-dir>/install/`
 
 ## Examples
 
