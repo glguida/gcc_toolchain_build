@@ -19,38 +19,6 @@ MPC= mpc-1.2.1
 MPFR= mpfr-4.1.1
 GCC= gcc-12.2.0
 
-GMP_CONFIGURE_OPTS=					\
-			--prefix $(TOOLBUILDDIR) \
-			--with-gnu-ld;
-
-
-MPFR_CONFIGURE_OPTS=					\
-			--with-gnu-ld			\
-			--prefix $(TOOLBUILDDIR) 	\
-			--target=$(BUILD_TARGET)	\
-			--with-gmp-build=$(TOOLBUILDDIR)/gmp;
-
-
-MPC_CONFIGURE_OPTS=					\
-			--with-gnu-ld			\
-			--prefix $(TOOLBUILDDIR) 	\
-			--target=$(BUILD_TARGET)	\
-			--with-gmp=$(TOOLBUILDDIR)	\
-			--with-mpfr=$(TOOLBUILDDIR);
-
-
-BINUTILS_CONFIGURE_OPTS=				\
-			--with-gnu-ld			\
-			--prefix $(INSTALLDIR)		\
-			--target=$(BUILD_TARGET)	\
-			--without-isl			\
-			--without-libs			\
-			--without-headers		\
-			--with-gmp=$(TOOLBUILDDIR) 	\
-			--with-mpfr=$(TOOLBUILDDIR)	\
-			--with-mpc=$(TOOLBUILDDIR);
-
-
 GCC_CONFIGURE_OPTS=					\
 			--prefix $(INSTALLDIR) 	\
 			--with-gnu-ld			\
@@ -61,7 +29,10 @@ GCC_CONFIGURE_OPTS=					\
 			--disable-libquadmath		\
 			--without-libs			\
 			--without-headers		\
-			--with-build-sysroot=$(TOOLBUILDDIR)
+			--with-build-sysroot=$(TOOLBUILDDIR) \
+			--enable-targets=all		\
+			--disable-plugins
+
 
 
 EXTS += $(BINUTILS) $(GMP) $(MPFR) $(MPC) $(GCC) $(NEWLIB)
