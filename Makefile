@@ -1,4 +1,4 @@
-
+PWD:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SRCROOT=$(PWD)
 MKDIR=$(SRCROOT)/mk
 include $(MKDIR)/mk.conf
@@ -13,25 +13,26 @@ FTP?= curl -O
 TOOLBUILDDIR?= $(TOOLDIR)/build
 INSTALLDIR?= $(SRCROOT)/install
 
-BINUTILS= binutils-2.39
+BINUTILS= binutils-2.43.1
 GMP= gmp-6.2.1
 MPC= mpc-1.2.1
-MPFR= mpfr-4.1.1
-GCC= gcc-12.2.0
+MPFR= mpfr-4.2.1
+GCC= gcc-14.2.0
 
 GCC_CONFIGURE_OPTS=					\
 			--prefix $(INSTALLDIR) 	\
-			--with-gnu-ld			\
 			--target=$(BUILD_TARGET)	\
 			--enable-languages=c		\
 			--disable-nls			\
+			--disable-libs			\
 			--disable-libssp		\
 			--disable-libquadmath		\
-			--without-libs			\
 			--without-headers		\
 			--with-build-sysroot=$(TOOLBUILDDIR) \
 			--enable-targets=all		\
-			--disable-plugins
+			--disable-libctf 		\
+			--disable-install-libbfd
+
 
 
 
@@ -91,10 +92,11 @@ prepare_gcc:
 		(cd $(EXTSDIR)/$(GCC); ln -s $$i); \
 	done
 
+riscv64-%-gcc: ARCH_CONFIGURE=CFLAGS_FOR_TARGET="-g -O2 -mcmodel=medany"
 %-gcc: BUILD_TARGET = $(subst -gcc,,$@)
 %-gcc: populate
 	mkdir -p $(TOOLBUILDDIR)/$(BUILD_TARGET)/gcc;
-	(cd $(TOOLBUILDDIR)/$(BUILD_TARGET)/gcc; $(EXTSDIR)/$(GCC)/configure $(GCC_CONFIGURE_OPTS))
+	(cd $(TOOLBUILDDIR)/$(BUILD_TARGET)/gcc; $(EXTSDIR)/$(GCC)/configure $(GCC_CONFIGURE_OPTS) $(ARCH_CONFIGURE))
 	$(MAKE) $(MAKEOPT) -C $(TOOLBUILDDIR)/$(BUILD_TARGET)/gcc
 	$(MAKE) $(MAKEOPT) -C $(TOOLBUILDDIR)/$(BUILD_TARGET)/gcc install
 
