@@ -1,0 +1,21 @@
+This patch simply re-enables "-shared" option to ld for riscv embedded targets.
+
+While not supported by the embedded riscv target, it does generate an
+output, and this is used to build gnu-efi binaries on riscv.
+
+diff -Nru binutils-2.43.1/ld/emulparams/elf32lriscv-defs.sh binutils-2.43.1-new/ld/emulparams/elf32lriscv-defs.sh
+--- binutils-2.43.1/ld/emulparams/elf32lriscv-defs.sh	2024-08-17 01:00:00
++++ binutils-2.43.1-new/ld/emulparams/elf32lriscv-defs.sh	2024-12-19 03:56:29
+@@ -18,8 +18,10 @@
+ 
+ # Enable shared library support for everything except an embedded elf target.
+ case "$target" in
+-  riscv*-elf)
+-    ;;
++# NUX specific: Disable this to allow -shared in embedded elf, necessary
++# for gnu-efi
++#  riscv*-elf)
++#    ;;
+   *)
+     GENERATE_SHLIB_SCRIPT=yes
+     GENERATE_PIE_SCRIPT=yes
