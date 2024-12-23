@@ -16,26 +16,33 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Install build-essential
+    - name: Install build-essential and prepare build
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential
+        sudo mkdir -p /mnt/gcc_toolchain_install
+        sudo chown runner:runner /mnt/gcc_toolchain_install
 
     - name: Populate toolchain
-      run: make populate
+      run: make populate INSTALLDIR=/mnt/gcc_toolchain_install
 
     - name: Build RISC-V toolchain with -shared support
-      run: make riscv64-unknown-elf-gcc
+      run: make riscv64-unknown-elf-gcc INSTALLDIR=/mnt/gcc_toolchain_install
 
     - name: Build i686 toolchain
-      run: make i686-unknown-elf-gcc
+      run: make i686-unknown-elf-gcc INSTALLDIR=/mnt/gcc_toolchain_install
 
     - name: Build AMD64 toolchain
-      run: make amd64-unknown-elf-gcc
+      run: make amd64-unknown-elf-gcc INSTALLDIR=/mnt/gcc_toolchain_install
+
+    - name: Create tarball
+      run: |
+        du -s -h /mnt/gcc_toolchain_install
+        XZ_OPT="-e -T0" tar cJvf gcc_toolchain.tar.xz -C /mnt/ gcc_toolchain_install/
 
     - name: Upload toolchains
       uses: actions/upload-artifact@v3
       if: success()
       with:
-        name: cross-toolchains
-        path: install/
+        name: gcc-toolchain
+        path: gcc_toolchain.tar.xz
