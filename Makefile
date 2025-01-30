@@ -22,18 +22,16 @@ GCC= gcc-14.2.0
 GCC_CONFIGURE_OPTS=					\
 			--prefix $(INSTALLDIR) 	\
 			--target=$(BUILD_TARGET)	\
-			--enable-languages=c		\
+			--enable-languages=c,c++	\
 			--disable-nls			\
 			--disable-libs			\
+			--disable-libstdcxx		\
 			--disable-libssp		\
-			--disable-libquadmath		\
-			--without-headers		\
+			--disable-libquadmath 		\
 			--with-build-sysroot=$(TOOLBUILDDIR) \
 			--enable-targets=all		\
 			--disable-libctf 		\
 			--disable-install-libbfd
-
-
 
 
 EXTS += $(BINUTILS) $(GMP) $(MPFR) $(MPC) $(GCC) $(NEWLIB)
